@@ -11,7 +11,8 @@ MAX_ITEMS = 20
 
 
 def parse_json_api(url: str, site: dict) -> list[dict]:
-    headers = {**HEADERS, **site.get("extra_headers", {})}
+    # brotli はrequestsが自動解凍できないため除外する
+    headers = {**HEADERS, "Accept-Encoding": "gzip, deflate", **site.get("extra_headers", {})}
     try:
         resp = requests.get(url, headers=headers, timeout=TIMEOUT)
         resp.raise_for_status()

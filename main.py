@@ -5,6 +5,7 @@ import yaml
 
 from core.fetcher import fetch
 from core.parser import parse_site
+from core.rss_parser import parse_rss
 from core.diff import load_history, save_history, find_new_items
 from core.mailer import send_mail
 
@@ -35,12 +36,14 @@ def main() -> None:
 
     for site in sites:
         logger.info("Fetching: %s", site["name"])
-        html = fetch(site["url"])
-        if html is None:
-            logger.warning("Skip %s (fetch failed)", site["name"])
-            continue
-
-        items = parse_site(html, site)
+        if site.get("type") == "rss":
+            items = parse_rss(site["url"], site)
+        else:
+            html = fetch(site["url"])
+            if html is None:
+                logger.warning("Skip %s (fetch failed)", site["name"])
+                continue
+            items = parse_site(html, site)
         new_items = find_new_items(site["name"], items, history)
         logger.info("%s: %d new item(s)", site["name"], len(new_items))
 

@@ -1,25 +1,12 @@
 sites:
   - name: 資源エネルギー庁
-    url: https://www.enecho.meti.go.jp/category/electricity_and_gas/electric/summary/
-    base_url: https://www.enecho.meti.go.jp
-    # 要素が変わった場合は list_selector / title_selector / link_selector を調整する
-    list_selector: "ul.newsList li"
-    title_selector: "a"
-    link_selector: "a"
-    excerpt_selector: null
+    type: rss
+    url: "https://news.google.com/rss/search?q=%E8%B3%87%E6%BA%90%E3%82%A8%E3%83%8D%E3%83%AB%E3%82%AE%E3%83%BC%E5%BA%81&hl=ja&gl=JP&ceid=JP:ja"
 
   - name: OCCTO（広域的運営推進機関）
-    url: https://www.occto.or.jp/news/
-    base_url: https://www.occto.or.jp
-    list_selector: "a.linklist-cms01__link"
-    title_selector: "span"
-    link_selector: null
-    excerpt_selector: null
+    type: rss
+    url: "https://news.google.com/rss/search?q=%E9%9B%BB%E5%8A%9B%E5%BA%83%E5%9F%9F%E7%9A%84%E9%81%8B%E5%96%B6%E6%8E%A8%E9%80%B2%E6%A9%9F%E9%96%A2&hl=ja&gl=JP&ceid=JP:ja"
 
   - name: 電力・ガス取引監視等委員会
-    url: https://www.egc.meti.go.jp/info/public/
-    base_url: https://www.egc.meti.go.jp
-    list_selector: "table.infoTable tr"
-    title_selector: "td a"
-    link_selector: "td a"
-    excerpt_selector: null
+    type: rss
+    url: "https://news.google.com/rss/search?q=%E9%9B%BB%E5%8A%9B%E3%83%BB%E3%82%AC%E3%82%B9%E5%8F%96%E5%BC%95%E7%9B%A3%E8%A6%96%E7%AD%89%E5%A7%94%E5%93%A1%E4%BC%9A&hl=ja&gl=JP&ceid=JP:ja"

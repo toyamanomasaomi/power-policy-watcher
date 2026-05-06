@@ -32,6 +32,7 @@ jobs:
           GMAIL_TO: ${{ secrets.GMAIL_TO }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           SUMMARIZER_MODE: ${{ vars.SUMMARIZER_MODE || 'none' }}
+          CLASSIFIER_MODE: ${{ vars.CLASSIFIER_MODE || 'keyword' }}
         run: python main.py
 
       - name: Commit updated history

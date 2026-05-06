@@ -24,6 +24,16 @@ if SUMMARIZER_MODE == "sumy":
 else:
     from core.summarizer_none import summarize
 
+CLASSIFIER_MODE = os.environ.get("CLASSIFIER_MODE", "keyword").lower()
+
+if CLASSIFIER_MODE == "ai":
+    from core.classifier_ai import classify
+elif CLASSIFIER_MODE == "keyword":
+    from core.classifier_keyword import classify
+else:
+    def classify(item: dict) -> bool:
+        return False
+
 
 def load_sites(path: str = "config/sites.yaml") -> list[dict]:
     with open(path, encoding="utf-8") as f:
@@ -54,6 +64,7 @@ def main() -> None:
         for item in new_items:
             item["summary"] = summarize(item.get("excerpt", ""))
             item["site_name"] = site["name"]
+            item["requires_attention"] = classify(item)
             all_new_items.append(item)
 
     save_history(history)

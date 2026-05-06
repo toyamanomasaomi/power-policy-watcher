@@ -1,0 +1,25 @@
+sites:
+  - name: 資源エネルギー庁
+    url: https://www.enecho.meti.go.jp/category/electricity_and_gas/electric/summary/
+    base_url: https://www.enecho.meti.go.jp
+    # 要素が変わった場合は list_selector / title_selector / link_selector を調整する
+    list_selector: "ul.newsList li"
+    title_selector: "a"
+    link_selector: "a"
+    excerpt_selector: null
+
+  - name: OCCTO（広域的運営推進機関）
+    url: https://www.occto.or.jp/information-library/
+    base_url: https://www.occto.or.jp
+    list_selector: ".contentsBox ul li"
+    title_selector: "a"
+    link_selector: "a"
+    excerpt_selector: null
+
+  - name: 電力・ガス取引監視等委員会
+    url: https://www.emsc.meti.go.jp/info/
+    base_url: https://www.emsc.meti.go.jp
+    list_selector: "table.infoTable tr"
+    title_selector: "td a"
+    link_selector: "td a"
+    excerpt_selector: null

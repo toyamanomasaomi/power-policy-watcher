@@ -16,6 +16,14 @@ sites:
     link_selector: null
     excerpt_selector: null
 
+  - name: テスト用（Hacker News）
+    url: https://news.ycombinator.com/
+    base_url: https://news.ycombinator.com
+    list_selector: "tr.athing"
+    title_selector: "span.titleline > a"
+    link_selector: "span.titleline > a"
+    excerpt_selector: null
+
   - name: 電力・ガス取引監視等委員会
     url: https://www.egc.meti.go.jp/info/public/
     base_url: https://www.egc.meti.go.jp

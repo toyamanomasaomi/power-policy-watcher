@@ -49,9 +49,9 @@ def main() -> None:
             item["site_name"] = site["name"]
             all_new_items.append(item)
 
+    save_history(history)
     if all_new_items:
         send_mail(all_new_items)
-        save_history(history)
         logger.info("Mail sent. %d new item(s) total.", len(all_new_items))
     else:
         logger.info("No new items found.")

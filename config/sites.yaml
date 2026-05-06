@@ -9,6 +9,8 @@ sites:
     base_url: "https://www.occto.or.jp"
     json_title_key: title
     json_url_key: url
+    extra_headers:
+      Referer: "https://www.occto.or.jp/news/"
 
   - name: 電力・ガス取引監視等委員会
     type: rss

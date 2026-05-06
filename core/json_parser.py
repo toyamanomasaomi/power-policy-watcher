@@ -11,10 +11,17 @@ MAX_ITEMS = 20
 
 
 def parse_json_api(url: str, site: dict) -> list[dict]:
+    headers = {**HEADERS, **site.get("extra_headers", {})}
     try:
-        resp = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
+        resp = requests.get(url, headers=headers, timeout=TIMEOUT)
         resp.raise_for_status()
+        if not resp.text.strip():
+            logger.error("Empty response from %s (status %d)", site["name"], resp.status_code)
+            return []
         data = resp.json()
+    except ValueError as e:
+        logger.error("JSON parse error %s: %s | body: %.200s", site["name"], e, resp.text)
+        return []
     except Exception as e:
         logger.error("JSON fetch error %s: %s", site["name"], e)
         return []

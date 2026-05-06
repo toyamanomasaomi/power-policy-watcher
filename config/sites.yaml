@@ -11,9 +11,9 @@ sites:
   - name: OCCTO（広域的運営推進機関）
     url: https://www.occto.or.jp/news/
     base_url: https://www.occto.or.jp
-    list_selector: ".contentsBox ul li"
-    title_selector: "a"
-    link_selector: "a"
+    list_selector: "a.linklist-cms01__link"
+    title_selector: "span"
+    link_selector: null
     excerpt_selector: null
 
   - name: 電力・ガス取引監視等委員会

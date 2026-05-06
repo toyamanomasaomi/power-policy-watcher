@@ -11,7 +11,11 @@ def parse_site(html: str, site: dict) -> list[dict]:
 
     for element in soup.select(site["list_selector"]):
         title_el = element.select_one(site.get("title_selector", "a"))
-        link_el = element.select_one(site.get("link_selector", "a"))
+        link_sel = site.get("link_selector")
+        link_el = element.select_one(link_sel) if link_sel else None
+        # list_selector が <a> 自体を指している場合はその要素をリンクとして使う
+        if link_el is None and element.name == "a":
+            link_el = element
         excerpt_sel = site.get("excerpt_selector")
         excerpt_el = element.select_one(excerpt_sel) if excerpt_sel else None
 

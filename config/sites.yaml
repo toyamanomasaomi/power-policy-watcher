@@ -9,7 +9,7 @@ sites:
     excerpt_selector: null
 
   - name: OCCTO（広域的運営推進機関）
-    url: https://www.occto.or.jp/oshirase/
+    url: https://www.occto.or.jp/news/
     base_url: https://www.occto.or.jp
     list_selector: ".contentsBox ul li"
     title_selector: "a"

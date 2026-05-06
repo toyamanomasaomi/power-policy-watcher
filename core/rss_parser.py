@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
 
-MAX_ITEMS = 20
+MAX_ITEMS = 200
 
 
 def _strip_html(text: str) -> str:

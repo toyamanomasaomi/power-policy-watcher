@@ -7,7 +7,7 @@ from core.fetcher import HEADERS, TIMEOUT
 
 logger = logging.getLogger(__name__)
 
-MAX_ITEMS = 20
+MAX_ITEMS = 200
 
 
 def parse_json_api(url: str, site: dict) -> list[dict]:

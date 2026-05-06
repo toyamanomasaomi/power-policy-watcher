@@ -24,7 +24,7 @@ def _build_body(items: list[dict]) -> str:
 
 def send_mail(items: list[dict]) -> None:
     from_addr = os.environ["GMAIL_FROM"]
-    to_addr = os.environ["GMAIL_TO"]
+    to_addrs = [a.strip() for a in os.environ["GMAIL_TO"].split(",") if a.strip()]
     password = os.environ["GMAIL_APP_PASSWORD"]
 
     subject = f"[電力制度] 新着 {len(items)} 件 ({date.today().isoformat()})"
@@ -32,7 +32,7 @@ def send_mail(items: list[dict]) -> None:
 
     msg = MIMEMultipart()
     msg["From"] = from_addr
-    msg["To"] = to_addr
+    msg["To"] = ", ".join(to_addrs)
     msg["Subject"] = subject
     msg.attach(MIMEText(body, "plain", "utf-8"))
 
@@ -40,6 +40,6 @@ def send_mail(items: list[dict]) -> None:
         server.ehlo()
         server.starttls()
         server.login(from_addr, password)
-        server.sendmail(from_addr, [to_addr], msg.as_string())
+        server.sendmail(from_addr, to_addrs, msg.as_string())
 
-    logger.info("Mail sent to %s (%d items)", to_addr, len(items))
+    logger.info("Mail sent to %s (%d items)", ", ".join(to_addrs), len(items))

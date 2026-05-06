@@ -1,8 +1,4 @@
 sites:
-  - name: 資源エネルギー庁
-    type: rss
-    url: "https://news.google.com/rss/search?q=%E8%B3%87%E6%BA%90%E3%82%A8%E3%83%8D%E3%83%AB%E3%82%AE%E3%83%BC%E5%BA%81&hl=ja&gl=JP&ceid=JP:ja"
-
   - name: OCCTO（広域的運営推進機関）
     type: json
     url: "https://www.occto.or.jp/_include/json/news-list.json"
@@ -15,3 +11,7 @@ sites:
   - name: 電力・ガス取引監視等委員会
     type: rss
     url: "https://news.google.com/rss/search?q=%E9%9B%BB%E5%8A%9B%E3%83%BB%E3%82%AC%E3%82%B9%E5%8F%96%E5%BC%95%E7%9B%A3%E8%A6%96%E7%AD%89%E5%A7%94%E5%93%A1%E4%BC%9A&hl=ja&gl=JP&ceid=JP:ja"
+
+  - name: 資源エネルギー庁
+    type: rss
+    url: "https://news.google.com/rss/search?q=%E8%B3%87%E6%BA%90%E3%82%A8%E3%83%8D%E3%83%AB%E3%82%AE%E3%83%BC%E5%BA%81&hl=ja&gl=JP&ceid=JP:ja"

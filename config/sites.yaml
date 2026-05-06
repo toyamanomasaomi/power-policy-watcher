@@ -17,8 +17,8 @@ sites:
     excerpt_selector: null
 
   - name: 電力・ガス取引監視等委員会
-    url: https://www.emsc.meti.go.jp/info/
-    base_url: https://www.emsc.meti.go.jp
+    url: https://www.egc.meti.go.jp/info/public/
+    base_url: https://www.egc.meti.go.jp
     list_selector: "table.infoTable tr"
     title_selector: "td a"
     link_selector: "td a"

@@ -6,6 +6,7 @@ import yaml
 from core.fetcher import fetch
 from core.parser import parse_site
 from core.rss_parser import parse_rss
+from core.json_parser import parse_json_api
 from core.diff import load_history, save_history, find_new_items
 from core.mailer import send_mail
 
@@ -36,8 +37,11 @@ def main() -> None:
 
     for site in sites:
         logger.info("Fetching: %s", site["name"])
-        if site.get("type") == "rss":
+        site_type = site.get("type", "html")
+        if site_type == "rss":
             items = parse_rss(site["url"], site)
+        elif site_type == "json":
+            items = parse_json_api(site["url"], site)
         else:
             html = fetch(site["url"])
             if html is None:

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>電力制度ウォッチャー — 仕組みガイド</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+      background: #f4f6fb;
+      color: #2d2d2d;
+      line-height: 1.7;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a3a5c 0%, #2563a8 100%);
+      color: white;
+      padding: 48px 24px 40px;
+      text-align: center;
+    }
+    header h1 { font-size: 1.9rem; font-weight: 700; margin-bottom: 10px; }
+    header p  { font-size: 1.05rem; opacity: 0.88; max-width: 600px; margin: 0 auto; }
+
+    .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 0.82rem;
+      margin-bottom: 16px;
+      letter-spacing: 0.04em;
+    }
+
+    main { max-width: 860px; margin: 0 auto; padding: 40px 20px 60px; }
+
+    /* ─── セクション共通 ─── */
+    section { margin-bottom: 48px; }
+    h2 {
+      font-size: 1.3rem;
+      color: #1a3a5c;
+      border-left: 5px solid #2563a8;
+      padding-left: 12px;
+      margin-bottom: 20px;
+    }
+
+    /* ─── 一言説明カード ─── */
+    .summary-card {
+      background: white;
+      border-radius: 12px;
+      padding: 28px 32px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      font-size: 1.05rem;
+      border-left: 6px solid #2563a8;
+    }
+    .summary-card strong { color: #2563a8; }
+
+    /* ─── フロー図 ─── */
+    .flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      background: white;
+      border-radius: 12px;
+      padding: 22px 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      position: relative;
+    }
+    .flow-step + .flow-step {
+      margin-top: 4px;
+    }
+    .flow-step::before {
+      content: "";
+      display: block;
+      width: 2px;
+      height: 18px;
+      background: #c8d8ef;
+      position: absolute;
+      top: -14px;
+      left: 42px;
+    }
+    .flow-step:first-child::before { display: none; }
+
+    .step-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .icon-blue   { background: #dbeafe; }
+    .icon-green  { background: #dcfce7; }
+    .icon-yellow { background: #fef9c3; }
+    .icon-red    { background: #fee2e2; }
+    .icon-purple { background: #ede9fe; }
+
+    .step-body h3 { font-size: 1.05rem; margin-bottom: 6px; color: #1a3a5c; }
+    .step-body p  { font-size: 0.93rem; color: #555; }
+
+    /* ─── サイト一覧 ─── */
+    .site-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .site-card {
+      background: white;
+      border-radius: 10px;
+      padding: 18px 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+    .site-card h3 { font-size: 0.95rem; color: #1a3a5c; margin-bottom: 6px; }
+    .site-type {
+      display: inline-block;
+      font-size: 0.75rem;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .type-json { background: #dbeafe; color: #1d4ed8; }
+    .type-rss  { background: #dcfce7; color: #166534; }
+    .site-card p { font-size: 0.88rem; color: #666; }
+
+    /* ─── キーワード ─── */
+    .keyword-box {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    }
+    .kw-group { margin-bottom: 16px; }
+    .kw-group h4 { font-size: 0.85rem; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .kw-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .kw-tag {
+      background: #fef3c7;
+      border: 1px solid #fbbf24;
+      color: #92400e;
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 0.85rem;
+    }
+
+    /* ─── メール例 ─── */
+    .mail-preview {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      border-radius: 12px;
+      padding: 24px;
+      font-family: "Courier New", monospace;
+      font-size: 0.87rem;
+      line-height: 1.8;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .mail-header { color: #89b4fa; margin-bottom: 12px; }
+    .mail-alert  { color: #f38ba8; font-weight: bold; }
+    .mail-sep    { color: #585b70; }
+    .mail-normal { color: #a6e3a1; font-weight: bold; }
+    .mail-url    { color: #89dceb; }
+    .mail-body   { color: #cdd6f4; }
+
+    /* ─── スケジュール ─── */
+    .schedule-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: white;
+      border-radius: 10px;
+      padding: 20px 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+    .time-badge {
+      background: #1a3a5c;
+      color: white;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      flex-shrink: 0;
+    }
+    .schedule-row p { font-size: 0.93rem; color: #555; }
+
+    /* ─── FAQ ─── */
+    details {
+      background: white;
+      border-radius: 10px;
+      padding: 16px 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      margin-bottom: 10px;
+    }
+    summary {
+      font-weight: 600;
+      cursor: pointer;
+      color: #1a3a5c;
+      list-style: none;
+    }
+    summary::before { content: "▶ "; font-size: 0.8em; color: #2563a8; }
+    details[open] summary::before { content: "▼ "; }
+    details p { margin-top: 10px; font-size: 0.93rem; color: #555; }
+
+    /* ─── フッター ─── */
+    footer {
+      text-align: center;
+      padding: 28px;
+      font-size: 0.82rem;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="badge">自動監視ツール ガイド</div>
+  <h1>⚡ 電力制度ウォッチャー</h1>
+  <p>電力制度に関する最新情報を自動収集し、重要な情報はGmailでお知らせするツールです</p>
+</header>
+
+<main>
+
+  <!-- ─── 一言まとめ ─── -->
+  <section>
+    <h2>このツールは何をするの？</h2>
+    <div class="summary-card">
+      電力制度に関する政府・機関のウェブサイトを<strong>毎日自動でチェック</strong>し、
+      前日から更新された情報があれば<strong>Gmailで通知</strong>します。<br>
+      特に「一般送配電事業者がシステムを変更しなければならない可能性がある」記事は
+      <strong>⚠ 要注意</strong>フラグを付けて最上部に表示します。
+    </div>
+  </section>
+
+  <!-- ─── 処理の流れ ─── -->
+  <section>
+    <h2>処理の流れ（5ステップ）</h2>
+    <div class="flow">
+
+      <div class="flow-step">
+        <div class="step-icon icon-blue">🌐</div>
+        <div class="step-body">
+          <h3>①  情報を取得する</h3>
+          <p>OCCTO・電力ガス取引監視等委員会・資源エネルギー庁などの公式サイトやニュースフィードにアクセスし、最新の記事一覧を取得します。</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="step-icon icon-green">🔍</div>
+        <div class="step-body">
+          <h3>②  新着だけを抽出する</h3>
+          <p>過去に送信した記事の URL を履歴ファイル（history.json）に記録しています。今回取得した中から<strong>まだ通知していないもの</strong>だけを選び出します。</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="step-icon icon-yellow">🤔</div>
+        <div class="step-body">
+          <h3>③  重要度を判定する</h3>
+          <p>記事のタイトルと本文に「系統連系」「需給調整市場」「省令改正」などの<strong>専門キーワード</strong>が含まれているか確認します。含まれていれば<strong>⚠ 要注意</strong>に分類します。</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="step-icon icon-purple">✉️</div>
+        <div class="step-body">
+          <h3>④  メールを送信する</h3>
+          <p>新着記事がある場合のみ Gmail でメールを送信します。⚠ 要注意の記事はメール上部にまとめて表示されます。新着ゼロのときはメールは送られません。</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="step-icon icon-red">💾</div>
+        <div class="step-body">
+          <h3>⑤  履歴を保存する</h3>
+          <p>今回通知した記事の URL を履歴に追加して保存します。次回実行時に重複して通知しないための仕組みです。</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── 監視対象サイト ─── -->
+  <section>
+    <h2>監視しているサイト</h2>
+    <div class="site-grid">
+      <div class="site-card">
+        <span class="site-type type-json">JSON API</span>
+        <h3>OCCTO（広域的運営推進機関）</h3>
+        <p>公式サイトのニュース一覧APIを直接取得。確実で高速な方法です。</p>
+      </div>
+      <div class="site-card">
+        <span class="site-type type-rss">Google News RSS</span>
+        <h3>電力・ガス取引監視等委員会</h3>
+        <p>Google ニュースで機関名を検索した結果をRSSで取得します。</p>
+      </div>
+      <div class="site-card">
+        <span class="site-type type-rss">Google News RSS</span>
+        <h3>資源エネルギー庁</h3>
+        <p>同様に Google ニュースから最新ニュースを取得します。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 要注意キーワード ─── -->
+  <section>
+    <h2>⚠ 要注意と判定されるキーワード</h2>
+    <div class="keyword-box">
+      <div class="kw-group">
+        <h4>系統・接続</h4>
+        <div class="kw-tags">
+          <span class="kw-tag">系統連系</span>
+          <span class="kw-tag">接続協議</span>
+          <span class="kw-tag">系統コード</span>
+          <span class="kw-tag">送電容量</span>
+          <span class="kw-tag">ノンファーム</span>
+          <span class="kw-tag">混雑管理</span>
+          <span class="kw-tag">保護リレー</span>
+        </div>
+      </div>
+      <div class="kw-group">
+        <h4>市場・取引</h4>
+        <div class="kw-tags">
+          <span class="kw-tag">需給調整市場</span>
+          <span class="kw-tag">インバランス</span>
+          <span class="kw-tag">接続供給</span>
+          <span class="kw-tag">容量市場</span>
+          <span class="kw-tag">ベースロード市場</span>
+        </div>
+      </div>
+      <div class="kw-group">
+        <h4>計量・メーター</h4>
+        <div class="kw-tags">
+          <span class="kw-tag">計量</span>
+          <span class="kw-tag">検針</span>
+          <span class="kw-tag">スマートメーター</span>
+          <span class="kw-tag">計量法</span>
+        </div>
+      </div>
+      <div class="kw-group">
+        <h4>制度・規制</h4>
+        <div class="kw-tags">
+          <span class="kw-tag">省令改正</span>
+          <span class="kw-tag">規程改定</span>
+          <span class="kw-tag">業務規程</span>
+          <span class="kw-tag">一般送配電</span>
+          <span class="kw-tag">技術要件</span>
+          <span class="kw-tag">技術基準</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── メール例 ─── -->
+  <section>
+    <h2>届くメールのイメージ</h2>
+    <div class="mail-preview">
+      <div class="mail-header">件名: [電力制度] ⚠要注意2件 / 新着5件 (2026-05-23)</div>
+      <div class="mail-body">電力制度 新着情報 (2026-05-23)
+</div>
+      <br>
+      <div class="mail-sep">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+      <div class="mail-alert">⚠ 要注意：一般送配電事業者 システム変更の可能性あり（2件）</div>
+      <div class="mail-sep">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+      <br>
+      <div class="mail-body">【OCCTO】需給調整市場の技術要件改定について
+</div>
+      <div class="mail-url">URL: https://www.occto.or.jp/news/...
+</div>
+      <br>
+      <div class="mail-sep">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+      <div class="mail-normal">■ その他の新着情報（3件）</div>
+      <div class="mail-sep">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+      <br>
+      <div class="mail-body">【資源エネルギー庁】再生可能エネルギー導入に関する報告書を公表
+</div>
+      <div class="mail-url">URL: https://www.enecho.meti.go.jp/...
+</div>
+    </div>
+  </section>
+
+  <!-- ─── スケジュール ─── -->
+  <section>
+    <h2>いつ動くの？</h2>
+    <div class="schedule-row">
+      <div class="time-badge">毎朝 6:00</div>
+      <p>GitHub Actions（クラウド上の無料自動実行環境）で毎日 JST 06:00 に自動実行されます。サーバーやPCをつけっぱなしにしておく必要はありません。</p>
+    </div>
+  </section>
+
+  <!-- ─── FAQ ─── -->
+  <section>
+    <h2>よくある疑問</h2>
+
+    <details>
+      <summary>メールが来ない日もあるの？</summary>
+      <p>はい。監視サイトに新着情報がない場合はメールを送信しません。毎日必ず届くわけではありません。</p>
+    </details>
+
+    <details>
+      <summary>同じ記事が何度も来ることはある？</summary>
+      <p>ありません。一度通知した記事のURLは履歴ファイルに記録されるため、2回目以降は無視されます。</p>
+    </details>
+
+    <details>
+      <summary>⚠ 要注意は絶対に見落とせない記事だけ？</summary>
+      <p>キーワードの一致で判定しているため、関係のない記事が要注意になる場合（誤検知）もあります。あくまでも「目を通してほしい記事の候補」としてご活用ください。</p>
+    </details>
+
+    <details>
+      <summary>複数人に送ることはできる？</summary>
+      <p>できます。環境変数 <code>GMAIL_TO</code> にカンマ区切りでメールアドレスを並べると複数宛先に同時送信されます（例：<code>a@example.com,b@example.com</code>）。</p>
+    </details>
+
+    <details>
+      <summary>監視するサイトを増やせる？</summary>
+      <p>できます。<code>config/sites.yaml</code> にサイト情報を追記するだけで対応できます。HTML・RSS・JSON API の3種類の取得方式に対応しています。</p>
+    </details>
+
+  </section>
+
+</main>
+
+<footer>
+  power-policy-watcher &nbsp;|&nbsp; GitHub Actions + Python + Gmail SMTP
+</footer>
+
+</body>
+</html>
